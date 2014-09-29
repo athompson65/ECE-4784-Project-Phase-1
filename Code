@@ -1,0 +1,47 @@
+%Antoria Thompson ece 4784
+%Constants
+t = [1:0.01:101];
+gk = 36; %Potassium Conductance
+gNa = 120; %Sodium Conductance
+gl = 0.3; %Leak Conductance
+Ek = -12; %Potassium Voltage
+ENa = 115; %Sodium Voltage
+El = 10.6; %Leak Voltage
+Vrest = -70; %Resting voltage
+Cm = 1; %Membrane capitance
+
+%Initial Calculations
+alpham = 0.1*((25-Vrest)/(exp((25-Vrest)/10)-1));
+betam =  4*exp(-Vrest/18);
+alphan = 0.01*((10-Vrest)/(exp((10-Vrest)/10)-1));
+betan = 0.125*exp(-Vrest/80);
+alphah = 0.7*exp(-Vrest/20);
+betah = 1/(exp((30-Vrest)/10)+1);
+m(1) = alpham/(alpham + betam);
+n(1) = alphan/(alphan + betan);
+h(1) = alphah/(alphah + betah);
+
+%Changing with time with current pulse                                                                                                                                
+for i=1:numel(t)
+    %if i[1:6];
+     %   I=5;
+    %else I=0;
+    %end
+alpham(i) = 0.1*((25-Vm(i))/(exp((25-Vm(i))/10)-1));
+betam(i) =  4*exp(-Vm(i)/18);
+alphan(i) = 0.01*((10-Vm(i))/(exp((10-Vm(i))/10)-1));
+betan(i) = 0.125*exp(-Vm(i)/80);
+alphah(i) = 0.7*exp(-Vm(i)/20);
+betah(i) = 1/(exp((30-Vm(i))/10)+1);
+INa = (m(i)^3)*gNa*h(i)*(Vm(i)-ENa);%Sodium Current
+Ik = (n(i)^4)*gk*(Vm(i)-Ek); %Potassium current
+Il = gl*(Vm(i)-El); %Leak current
+Iion = I-Ik-INa-Il; %Ion current
+Vm(i) = Iion/Cm; %Membrane voltage change
+Vm(i+1)= Vm(i)+0.01*(Iion/Cm);
+%m(i+1) = alpham*(1-m(i))-betam*m(i);
+%n(i+1) = alphan*(1-n(i))-betan*n(i);
+%h(i+1) = alphah*(1-h(i))-betah*h(i);
+end
+plot(t,Vrest)
+%plot(i,Vm(i))
